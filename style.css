@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-nav {
+    margin-top: 10px;
+    padding: 10px 0;
+    background-color: #736252;
+    border-radius: 25px;
+    color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-logo {
+    font-size: 25px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+}
+
+.nav-links {
+    display: flex;
+    gap: 50px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    transition: color .2s linear;
+}
+
+.nav-link:hover {
+    color: #eaeaea;
+}
+
+.nav-btn {
+    text-decoration: none;
+    padding: 5px 20px;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    color: #fff;
+    transition: color .2s linear, background-color .2s linear;
+}
+
+.nav-btn:hover {
+    color: #000;
+    background-color: #fff;
+}
+
+
+/*  REGISTRATION & LOGIN */
+
+.header-title {
+    margin: 150px 0 5px 0;
+    color: #736252;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    font-size: 30px;
+}
+
+.login {
+    margin-top: 200px;
+}
+
+.header-text {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-link {
+    text-decoration: none;
+    color: #736252;
+    border-bottom: 1.5px solid #736252;
+}
+
+.header-form {
+    width: 20%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wrapper {  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-form input {
+    width: 100%;
+    padding-left: 15px;
+    height: 35px;
+    border: 2px solid #736252;
+    border-radius: 20px;
+}
+
+.header-form input[type=button] {
+    cursor: pointer;
+}
+
+.header-form input[type=button]:hover {
+    background-color: #736252;
+    color: #fff;
+}
+
+
+
+/*  ERROR  */
+
+.error {
+    margin-top: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.error-text {
+    font-size: 40px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.error-btn {
+    text-decoration: none;
+    font-size: 20px;
+    color: #fff;
+    background-color: #ff4f5a;
+    padding: 15px 25px;
+    border-radius: 30px;
+    transition: background-color .2s linear;
+}
+
+.error-btn:hover {
+    background-color: #cf2934;
+}
