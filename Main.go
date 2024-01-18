@@ -28,6 +28,11 @@ type ResponseBody struct {
 	Message string `json:"message"`
 }
 
+type ResponseUser struct {
+	Status  string `json:"status"`
+	Message []User `json:"message"`
+}
+
 type User struct {
 	gorm.Model
 	Username string
@@ -45,6 +50,12 @@ type UserRepository interface {
 
 type DBUserRepository struct {
 	DB *gorm.DB
+}
+
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Allow requests from any origin
+	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 func (r *DBUserRepository) GetUserByID(id uint) (*User, error) {
@@ -118,7 +129,7 @@ func (h *UserHandler) GetUserByIDHandler(w http.ResponseWriter, r *http.Request)
 
 	response := ResponseBody{
 		Status:  "success",
-		Message: "User founded - " + user.Username,
+		Message: user.Username,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -149,7 +160,7 @@ func (h *UserHandler) UpdateUserNameHandler(w http.ResponseWriter, r *http.Reque
 
 	response := ResponseBody{
 		Status:  "success",
-		Message: "Username updated to - " + req.NewName,
+		Message: "User successfully updated",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -216,6 +227,7 @@ func (h *UserHandler) GetAllUsersHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -236,8 +248,6 @@ func (h *UserHandler) LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON message", http.StatusBadRequest)
 		return
 	}
-
-	// Your login logic here
 
 	responseMessage := "Invalid login or password"
 
@@ -315,13 +325,17 @@ func main() {
 		http.ServeFile(w, r, "pages/auth/register.html")
 	})
 
+	router.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "pages/crud-test/users.html")
+	})
+
 	router.HandleFunc("/api/register", userHandler.CreateUserHandler).Methods("POST")
 	router.HandleFunc("/api/login", userHandler.LoginUserHandler).Methods("POST")
 
-	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUserByIDHandler).Methods("GET")
-	router.HandleFunc("/users/{id:[0-9]+}", userHandler.UpdateUserNameHandler).Methods("PUT")
-	router.HandleFunc("/users/{id:[0-9]+}", userHandler.DeleteUserHandler).Methods("DELETE")
-	router.HandleFunc("/users", userHandler.GetAllUsersHandler).Methods("GET")
+	router.HandleFunc("/api/users/{id:[0-9]+}", userHandler.GetUserByIDHandler).Methods("GET")
+	router.HandleFunc("/api/users/{id:[0-9]+}", userHandler.UpdateUserNameHandler).Methods("PUT")
+	router.HandleFunc("/api/users/{id:[0-9]+}", userHandler.DeleteUserHandler).Methods("DELETE")
+	router.HandleFunc("/api/users", userHandler.GetAllUsersHandler).Methods("GET")
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 

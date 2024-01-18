@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-nav {
+            margin-top: 10px;
+            padding: 10px 0;
+            background-color: #736252;
+            border-radius: 25px;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 25px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 50px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #fff;
+            font-size: 16px;
+            transition: color .2s linear;
+        }
+
+        .nav-link:hover {
+            color: #eaeaea;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 5px 20px;
+            border: 1px solid #fff;
+            border-radius: 20px;
+            color: #fff;
+            transition: color .2s linear, background-color .2s linear;
+        }
+
+        .nav-btn:hover {
+            color: #000;
+            background-color: #fff;
+        }
+
+        .header-title {
+            margin: 100px 0 5px 0;
+            color: #736252;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #result {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            margin-top: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .result-user {
+            border: 2px solid #736252;
+            border-radius: 20px;
+            padding: 10px 20px;
+            flex-basis: 350px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        span {
+            font-style: italic;
+            font-size: 14px;
+            color: #736252;
+            margin-right: 5px;
+        }
+
+        .header-forms {
+            display: flex;
+        }
+
+        .header-form {
+            width: 20%;
+            margin: 0 auto;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-form input {
+            width: 100%;
+            padding-left: 15px;
+            height: 35px;
+            border: 2px solid #736252;
+            border-radius: 20px;
+        }
+
+        .header-form input[type=button] {
+            cursor: pointer;
+        }
+
+        .header-form input[type=button]:hover {
+            background-color: #736252;
+            color: #fff;
+        }
+    </style>
+    <title>RecipeHub</title>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="header-nav">
+                <div class="nav-logo">RecipeHub</div>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/help" class="nav-link">How it works?</a>
+                    <a href="/recipes" class="nav-link">Discover Recipes</a>
+                </div>
+                <a href="/login" class="nav-btn">Join</a>
+            </nav>
+            <div class="header-inner">
+                <div class="header-title">Users list:</div>
+                <div id="result"></div>
+                <div class="header-forms">
+                    <form class="header-form" action="/users" method="GET">
+                        <div class="wrapper">
+                            <label for="id">Enter user ID:</label>
+                            <input type="text" id="id1" name="id" placeholder="ID" required>
+                        </div>
+                        <input type="button" value="Find user" onclick="findUserById()">
+                        <label for="result" id="result2"></label>
+                    </form>
+
+                    <form class="header-form" action="/users" method="PUT">
+                        <div class="wrapper">
+                            <label for="id">Enter user ID:</label>
+                            <input type="text" id="id2" name="id" placeholder="ID" required>
+                        </div>
+                        <div class="wrapper">
+                            <label for="id">Enter new username:</label>
+                            <input type="text" id="username" name="id" placeholder="New username" required>
+                        </div>
+                        <input type="button" value="Update user" onclick="updateUsernameById()">
+                        <label for="result" id="result3"></label>
+                    </form>
+
+                    <form class="header-form" action="/users" method="DELETE">
+                        <div class="wrapper">
+                            <label for="id">Enter user ID:</label>
+                            <input type="text" id="id3" name="id" placeholder="ID" required>
+                        </div>
+                        <input type="button" value="Delete user" onclick="deleteUserById()">
+                        <label for="result" id="result4"></label>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        async function updateUsernameById() {
+            const userID = document.getElementById('id2').value;
+            const username = document.getElementById('username').value;
+            const result = document.getElementById('result3');
+
+            const dataToSend = {
+                "newName": username
+            };
+
+            try {
+                const response = await fetch(`/api/users/${userID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataToSend)
+                });
+
+                const data = await response.json();
+                const message = data.message;
+
+                result.innerHTML = `<span>${message}</span>`;
+
+                const mainResult = document.getElementById('result');
+                mainResult.innerHTML = '';
+                getData();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function deleteUserById() {
+            const userID = document.getElementById('id3').value;
+            const result = document.getElementById('result4');
+
+            try {
+                const response = await fetch(`/api/users/${userID}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                const message = data.message;
+
+                result.innerHTML = `<span>${message}</span>`;
+
+                const mainResult = document.getElementById('result');
+                mainResult.innerHTML = '';
+                getData();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }            
+        }
+
+        async function findUserById() {
+            const userID = document.getElementById('id1').value;
+            const result = document.getElementById('result2');
+
+            result.innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/users/${userID}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                const username = data.message;
+
+                const userElement = document.createElement('div');
+                userElement.classList.add('result-user');
+                userElement.innerHTML = `<img width="25" height="25" src="https://img.icons8.com/ios/50/gender-neutral-user--v1.png" alt="user"/><div><p><span>Username: </span>${username}</p></div>`;
+                result.appendChild(userElement);
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function getData() {
+            const result = document.getElementById('result');
+
+            try {
+                const response = await fetch("/api/users", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                data.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.classList.add('result-user');
+                    userElement.innerHTML = `<img width="25" height="25" src="https://img.icons8.com/ios/50/gender-neutral-user--v1.png" alt="user"/><div><p><span>Username: </span>${user.Username}</p><p><span>Email:</span>${user.Email}</p></div>`;
+                    result.appendChild(userElement);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        getData();
+    </script>
+</body>
+</html>
