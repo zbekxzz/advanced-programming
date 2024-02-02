@@ -5,7 +5,163 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-nav {
+            margin-top: 10px;
+            padding: 10px 0;
+            background-color: #736252;
+            border-radius: 25px;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 25px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 50px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #fff;
+            font-size: 16px;
+            transition: color .2s linear;
+        }
+
+        .nav-link:hover {
+            color: #eaeaea;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 5px 20px;
+            border: 1px solid #fff;
+            border-radius: 20px;
+            color: #fff;
+            transition: color .2s linear, background-color .2s linear;
+        }
+
+        .nav-btn:hover {
+            color: #000;
+            background-color: #fff;
+        }
+
+        .recipe-inner {
+            padding-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /*  RECIPES  */
+        .recipetitle {
+            font-size: 40px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        #recipeForms {
+            margin-left: 500px;
+            width: 600px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .recipe-inner label {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .recipe-inner select {
+            height: 30px;
+            border: 0.5px solid #000;
+            border-radius: 10px;
+        }
+        
+        .recipe-inner input {
+            width: 50px;
+            height: 30px;
+            border: 0.5px solid #000;
+            border-radius: 10px;
+            padding-left: 10px;
+        }
+
+        #recipes {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-left: 150px;
+        }
+
+        .recipe {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 25%;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+
+        .recipe-category {
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        .recipe-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .recipe-desc {
+            white-space: nowrap;    
+            font-size: 15px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .recipe-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .username {
+            font-size: 14px;
+        }
+
+        .date {
+            font-size: 12px;
+        }
+
+
+
+    </style>
     <title>RecipeHub</title>
 </head>
 <body>
@@ -20,10 +176,87 @@
                 </div>
                 <a href="/login" class="nav-btn">Join</a>
             </nav>
-            <div class="header-inner">
-                <img src="" alt="">
+            <div class="recipe-inner">
+                <div class="recipetitle">Enjoy cooking!</div>
+                <div id="recipeForms">
+                    <form id="filterForm">
+                        <label for="filter">Filter</label>
+                        <select id="filter" name="filter">
+                            <option value="">None</option>
+                            <option value="Salads">Salads</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Soups">Soups</option>
+                            <option value="Main Dishes">Main Dishes</option>
+                            <option value="Drinks">Drinks</option>
+                            <option value="Desserts">Desserts</option>
+                        </select>
+                    </form>
+                    <form id="sortForm">
+                        <label for="sort">Sort</label>
+                        <select id="sort" name="sort">
+                            <option value="">None</option>
+                            <option value="published_date">Published Date</option>
+                        </select>
+                    </form>
+                    <form id="paginationForm">
+                        <label for="page">Page:</label>
+                        <input type="number" id="page" name="page" min="1" value="1">
+                    </form>
+                    
+                </div>
+                <div id="recipes"></div>
             </div>
         </div>
     </header>
+
+    <script>
+        function fetchRecipes() {
+            const filterForm = document.getElementById("filterForm");
+            const sortForm = document.getElementById("sortForm");
+            const paginationForm = document.getElementById("paginationForm");
+
+            const filter = new URLSearchParams(new FormData(filterForm)).toString();
+            const sort = new URLSearchParams(new FormData(sortForm)).toString();
+            const page = new URLSearchParams(new FormData(paginationForm)).toString();
+
+            const url = `http://localhost:6060/api/recipes?${filter}&${sort}&${page}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const recipesDiv = document.getElementById("recipes");
+                    recipesDiv.innerHTML = '';
+                    if (data.length === 0) {
+                        recipesDiv.innerHTML += "No recipes found.";
+                    } else {
+                        
+                        data.forEach(recipe => {
+                            const recipeDiv = document.createElement("div");
+                            recipeDiv.classList.add("recipe")
+                            recipeDiv.innerHTML = `
+                                <div class="recipe-category">${recipe.Category}</div>
+                                <div class="recipe-title">${recipe.Title}</div>
+                                <div class="recipe-desc">${recipe.RecipeText}</div>
+                                <div class="recipe-info">
+                                    <img width="25" height="25" src="https://img.icons8.com/ios-glyphs/60/user--v1.png" alt="user--v1"/>
+                                    <div class="info-text">
+                                        <div class="username">${recipe.PublisherUsername}</div>
+                                        <div class="date">${recipe.PublishedDate}</div>
+                                    </div>
+                                </div>
+                            `;
+                            recipesDiv.appendChild(recipeDiv);
+                        })
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        document.getElementById("filter").addEventListener("change", fetchRecipes);
+        document.getElementById("sort").addEventListener("change", fetchRecipes);
+        document.getElementById("page").addEventListener("input", fetchRecipes);
+
+        fetchRecipes();
+    </script>
 </body>
 </html>
