@@ -43,3 +43,7 @@
 {"level":"info","msg":"Retrieved all users","time":"2024-02-02T17:57:38+06:00","userCount":4}
 {"level":"info","msg":"Retrieved all users","time":"2024-02-02T17:57:39+06:00","userCount":4}
 {"level":"info","msg":"Retrieved all users","time":"2024-02-02T17:57:39+06:00","userCount":4}
+{"level":"info","msg":"Retrieved all users","time":"2024-02-02T18:00:36+06:00","userCount":4}
+{"level":"info","msg":"Retrieved all recipes","recipeCount":12,"time":"2024-02-02T18:00:38+06:00"}
+{"level":"info","msg":"Retrieved all recipes","recipeCount":10,"time":"2024-02-02T18:00:45+06:00"}
+{"level":"info","msg":"Retrieved all recipes","recipeCount":10,"time":"2024-02-02T18:01:54+06:00"}
